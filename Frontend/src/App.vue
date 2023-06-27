@@ -15,7 +15,7 @@ export default {
         event.preventDefault();
         this.$refs.error.innerHTML = "";
         const data = await axios.get(
-          `http://localhost:5000?url=${this.url}&format=${this.format}`,
+          `https://backend-yt-downloader.onrender.com?url=${this.url}&format=${this.format}`,
           {
             responseType: "blob",
           }
