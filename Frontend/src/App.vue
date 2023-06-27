@@ -41,7 +41,7 @@ export default {
   <form action="">
     <input type="text" name="url" v-model="url" />
     <select v-model="format">
-      <option selected>mp4</option>
+      <option>mp4</option>
       <option>mp3</option>
     </select>
     <input v-on:click="download" type="submit" value="Download" />
