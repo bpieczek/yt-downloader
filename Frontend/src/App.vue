@@ -1,30 +1,53 @@
-<script setup>
-import HelloWorld from './components/HelloWorld.vue'
+<script>
+import axios from "axios";
+
+export default {
+  name: "App",
+  data() {
+    return {
+      url: "",
+      format: "mp4",
+    };
+  },
+  methods: {
+    async download(event) {
+      try {
+        event.preventDefault();
+        this.$refs.error.innerHTML = "";
+        const data = await axios.get(
+          `http://localhost:5000?url=${this.url}&format=${this.format}`,
+          {
+            responseType: "blob",
+          }
+        );
+        const blob = new Blob([data.data], {
+          type: data.headers["Content-Type"],
+        });
+
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        link.download = `video.${this.format}`;
+        link.click();
+        URL.revokeObjectURL(link.href);
+      } catch (err) {
+        this.$refs.error.innerHTML = "Something's went wrong try again";
+      }
+    },
+  },
+};
 </script>
 
 <template>
-  <div>
-    <a href="https://vitejs.dev" target="_blank">
-      <img src="/vite.svg" class="logo" alt="Vite logo" />
-    </a>
-    <a href="https://vuejs.org/" target="_blank">
-      <img src="./assets/vue.svg" class="logo vue" alt="Vue logo" />
-    </a>
-  </div>
-  <HelloWorld msg="Vite + Vue" />
+  <form action="">
+    <input type="text" name="url" v-model="url" />
+    <select v-model="format">
+      <option selected>mp4</option>
+      <option>mp3</option>
+    </select>
+    <input v-on:click="download" type="submit" value="Download" />
+  </form>
+
+  <p ref="error"></p>
 </template>
 
-<style scoped>
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.vue:hover {
-  filter: drop-shadow(0 0 2em #42b883aa);
-}
-</style>
+<style scoped></style>
